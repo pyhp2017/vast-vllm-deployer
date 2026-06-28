@@ -1,0 +1,10 @@
+.env
+.env.*
+!.env.example
+
+.vastai-cli-venv/
+vast-vllm-*.env
+
+.DS_Store
+*.log
+*.tmp
