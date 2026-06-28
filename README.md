@@ -67,6 +67,23 @@ Deploy:
   --offer-index 1
 ```
 
+Pass custom vLLM arguments when needed:
+
+```bash
+./deploy-vllm-vast.sh --yes \
+  --model Qwen/Qwen3-8B \
+  --gpus 1 \
+  --min-gpu-ram 18 \
+  --disk 120 \
+  --extra-vllm-args "--enable-auto-tool-choice --tool-call-parser hermes"
+```
+
+In interactive mode, the script also asks:
+
+```text
+? Extra vLLM args, blank for none:
+```
+
 When deployment finishes, the script writes a file like:
 
 ```text
@@ -146,7 +163,7 @@ If your deployment uses the default Vast proxy, use the curl flow above or confi
 --verified y|n            Filter to verified machines. Default: y.
 --no-verified             Shortcut for --verified n.
 --pricing on-demand|bid   Pricing type. Default: on-demand.
---extra-vllm-args ARGS    Extra args appended to vLLM.
+--extra-vllm-args ARGS    Extra args appended to vLLM, for example tool-call support.
 --offer-index N           Offer table row to rent.
 ```
 

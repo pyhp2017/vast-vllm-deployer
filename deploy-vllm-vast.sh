@@ -1040,6 +1040,7 @@ main() {
   prompt_if_empty DISK_GB "Disk size in GB" "$DEFAULT_DISK"
   prompt_if_empty VERIFIED_ONLY "Verified machines only? y/n" "$DEFAULT_VERIFIED"
   prompt_if_empty PRICING_TYPE "Pricing type: on-demand or bid" "$DEFAULT_PRICING"
+  prompt_if_empty EXTRA_VLLM_ARGS "Extra vLLM args, blank for none" ""
 
   VAST_API_KEY="$(trim "$VAST_API_KEY")"
   MODEL_ID="$(trim "$MODEL_ID")"
@@ -1051,6 +1052,7 @@ main() {
   DISK_GB="$(trim "$DISK_GB")"
   VERIFIED_ONLY="$(normalize_bool "$VERIFIED_ONLY")"
   PRICING_TYPE="$(trim "$PRICING_TYPE")"
+  EXTRA_VLLM_ARGS="$(trim "$EXTRA_VLLM_ARGS")"
   OFFER_INDEX="$(trim "$OFFER_INDEX")"
   TEMPLATE_HASH="$(trim "$TEMPLATE_HASH")"
 
