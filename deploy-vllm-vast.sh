@@ -648,7 +648,7 @@ is_default_vast_vllm_template() {
 
 create_instance_with_template() {
   local offer_id="$1"
-  local payload output status
+  local payload output status http_status body
 
   if is_default_vast_vllm_template; then
     payload="$(python3 -c '
@@ -690,21 +690,25 @@ print(json.dumps({
   fi
 
   set +e
-  output="$(curl -fsS -X PUT "https://console.vast.ai/api/v0/asks/${offer_id}/?api_key=${VAST_API_KEY}" \
+  output="$(curl -sS -X PUT "https://console.vast.ai/api/v0/asks/${offer_id}/?api_key=${VAST_API_KEY}" \
     -H "Authorization: Bearer ${VAST_API_KEY}" \
     -H "Content-Type: application/json" \
-    --data-binary "$payload" 2>&1)"
+    --data-binary "$payload" \
+    -w $'\n%{http_code}' 2>&1)"
   status=$?
   set -e
 
-  if [[ "$status" -ne 0 ]]; then
+  http_status="$(printf '%s\n' "$output" | tail -n 1)"
+  body="$(printf '%s\n' "$output" | sed '$d')"
+
+  if [[ "$status" -ne 0 || ! "$http_status" =~ ^2 ]]; then
     say ""
-    say "${RED}Vast REST create instance failed:${RESET}" >&2
-    printf '%s\n' "$output" | redact >&2
-    exit "$status"
+    say "${RED}Vast REST create instance failed (HTTP ${http_status:-unknown}):${RESET}" >&2
+    printf '%s\n' "$body" | redact >&2
+    exit 1
   fi
 
-  printf '%s\n' "$output"
+  printf '%s\n' "$body"
 }
 
 json_create_payload_preview() {
